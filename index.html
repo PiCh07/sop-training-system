@@ -1,222 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>SOP → AI Training System</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#ffffff;--bg2:#f7f6f3;--bg3:#f0efe9;
-  --text:#1a1a1a;--text2:#6b6b6b;--text3:#9a9a9a;
-  --border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.18);
-  --blue-bg:#E6F1FB;--blue-text:#0C447C;--blue-mid:#378ADD;
-  --teal-bg:#E1F5EE;--teal-text:#085041;
-  --amber-bg:#FAEEDA;--amber-text:#633806;
-  --green-bg:#EAF3DE;--green-text:#27500A;
-  --radius:10px;--radius-sm:7px;
-}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);min-height:100vh;padding:2rem 1rem;line-height:1.6}
-.page{max-width:760px;margin:0 auto}
-.badge{display:inline-block;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:.05em;text-transform:uppercase}
-.b-blue{background:var(--blue-bg);color:var(--blue-text)}
-.b-teal{background:var(--teal-bg);color:var(--teal-text)}
-.b-amber{background:var(--amber-bg);color:var(--amber-text)}
-.b-green{background:var(--green-bg);color:var(--green-text)}
-.b-gray{background:var(--bg2);color:var(--text2)}
-h1{font-size:26px;font-weight:600;color:var(--text);margin:.4rem 0 .25rem}
-.sub{font-size:14px;color:var(--text2);margin-bottom:1.75rem}
-.panel{background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.25rem}
-.sl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);margin-bottom:.5rem}
-.row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:.6rem}
-textarea{width:100%;border:.5px solid var(--border2);border-radius:var(--radius-sm);padding:.875rem 1rem;font-size:13.5px;font-family:inherit;color:var(--text);background:var(--bg);resize:vertical;min-height:160px;line-height:1.65;outline:none;transition:border-color .15s}
-textarea:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(55,138,221,.1)}
-.btn{display:inline-flex;align-items:center;gap:6px;border:.5px solid var(--border2);border-radius:var(--radius-sm);padding:0 1.25rem;height:38px;font-size:13px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--text);transition:background .15s}
-.btn:hover{background:var(--bg2)}.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn-primary{background:var(--text);color:var(--bg);border-color:var(--text)}.btn-primary:hover{background:#333}
-.btn-sm{height:30px;font-size:12px;padding:0 .875rem;border:.5px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text2);cursor:pointer}
-.btn-sm:hover{background:var(--bg2)}
-.cc{font-size:12px;color:var(--text3)}
-.lbar{height:3px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:.75rem 0 .3rem}
-.lf{height:100%;width:0%;background:var(--blue-mid);border-radius:3px;transition:width .5s ease}
-.lmsg{font-size:12px;color:var(--text2)}
-.fb{background:var(--amber-bg);border:.5px solid rgba(186,117,23,.3);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:none}
-.fb h3{font-size:14px;font-weight:600;color:var(--amber-text);margin-bottom:.25rem}
-.fb p{font-size:13px;color:#7a5020;line-height:1.6;margin-bottom:.75rem}
-.pbox{font-family:'SF Mono','Fira Code',monospace;font-size:12px;color:var(--text2);background:var(--bg);border:.5px solid var(--border2);border-radius:var(--radius-sm);padding:.75rem;white-space:pre-wrap;word-break:break-word;max-height:180px;overflow-y:auto;margin:.5rem 0;line-height:1.5}
-.divider{border:none;border-top:.5px solid var(--border);margin:1.25rem 0}
-.card{background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:.6rem}
-.bul{display:flex;gap:10px;align-items:flex-start;margin-bottom:.5rem;font-size:14px;line-height:1.65;color:var(--text)}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--blue-mid);flex-shrink:0;margin-top:8px}
-.sn{width:26px;height:26px;border-radius:50%;background:var(--blue-bg);color:var(--blue-text);font-size:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.ql{width:24px;height:24px;border-radius:var(--radius-sm);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.cb{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--green-bg);color:var(--green-text);font-weight:600;margin-left:6px}
-#outputSection{display:none}
-#lwrap{display:none}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #fafaf8; --surface: #ffffff; --surface2: #f4f3ef;
+    --border: #e4e2db; --border2: #d0cec5;
+    --text: #1a1a18; --muted: #6b6960; --hint: #9b9890;
+    --blue-bg: #e8f1fb; --blue: #1a5fb4;
+    --teal-bg: #e0f5ee; --teal: #0a6e52;
+    --amber-bg: #faeedd; --amber: #7a4a0a;
+    --green-bg: #e8f3dc; --green: #2a5a0e;
+    --red-bg: #fce8e8; --red: #a02828;
+    --accent: #2563eb;
+    --radius: 10px; --radius-sm: 6px;
+  }
+  body { font-family: 'Georgia', serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+
+  .tag { display: inline-block; font-size: 10.5px; font-weight: 600; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.06em; text-transform: uppercase; font-family: 'Arial', sans-serif; }
+  .tag-blue  { background: var(--blue-bg);  color: var(--blue); }
+  .tag-teal  { background: var(--teal-bg);  color: var(--teal); }
+  .tag-amber { background: var(--amber-bg); color: var(--amber); }
+  .tag-green { background: var(--green-bg); color: var(--green); }
+  .tag-gray  { background: var(--surface2); color: var(--muted); }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+  .slabel { font-size: 10.5px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--hint); font-family: 'Arial', sans-serif; margin-bottom: 0.6rem; }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 0.75rem; }
+
+  input[type="password"], textarea {
+    width: 100%; border: 1px solid var(--border2); border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem; font-size: 13.5px; font-family: 'Arial', sans-serif;
+    color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s;
+  }
+  input[type="password"]:focus, textarea:focus { border-color: var(--accent); }
+  input[type="password"]::placeholder, textarea::placeholder { color: var(--hint); }
+  textarea { resize: vertical; min-height: 170px; line-height: 1.65; }
+
+  .btn {
+    border-radius: var(--radius-sm); font-family: 'Arial', sans-serif; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; border: 1px solid var(--border2);
+    background: var(--surface); color: var(--text); font-size: 13px;
+    padding: 0 1.1rem; height: 36px; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { background: var(--surface2); }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .btn-primary:hover { background: #333330; }
+  .btn-sm { font-size: 12px; height: 30px; padding: 0 0.85rem; }
+
+  .progress-wrap { margin: 0.75rem 0; display: none; }
+  .progress-track { height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0%; background: var(--accent); border-radius: 2px; transition: width 0.5s ease; }
+  .progress-msg { font-size: 12px; color: var(--muted); font-family: 'Arial', sans-serif; margin-top: 6px; }
+
+  .error-box { background: var(--red-bg); border: 1px solid #f09595; border-radius: var(--radius-sm); padding: 0.7rem 1rem; font-size: 13px; color: var(--red); font-family: 'Arial', sans-serif; display: none; margin-top: 0.5rem; line-height: 1.6; }
+  .info-box { background: var(--blue-bg); border: 1px solid #b5d4f4; border-radius: var(--radius-sm); padding: 0.7rem 1rem; font-size: 13px; color: var(--blue); font-family: 'Arial', sans-serif; line-height: 1.6; margin-bottom: 0.75rem; }
+  .info-box a { color: var(--blue); font-weight: 600; }
+
+  .output-wrap { display: none; }
+  .output-wrap.show { display: block; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 0.6rem; }
+  .bullet { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 0.55rem; font-size: 14px; line-height: 1.65; font-family: 'Arial', sans-serif; color: var(--text); }
+  .bullet:last-child { margin-bottom: 0; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 8px; }
+
+  .step-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--blue-bg); color: var(--blue); font-size: 12px; font-weight: 700; flex-shrink: 0; font-family: 'Arial', sans-serif; }
+  .step-title { font-weight: 700; font-size: 14px; color: var(--text); font-family: 'Arial', sans-serif; }
+  .step-timing { font-size: 12px; font-weight: 400; color: var(--muted); margin-left: 4px; }
+  .step-desc { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.6; font-family: 'Arial', sans-serif; }
+
+  .quiz-q { font-size: 13.5px; font-weight: 700; color: var(--text); font-family: 'Arial', sans-serif; margin-bottom: 0.65rem; }
+  .quiz-opt { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+  .opt-letter { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: var(--radius-sm); background: var(--surface2); color: var(--muted); font-size: 11.5px; font-weight: 700; flex-shrink: 0; font-family: 'Arial', sans-serif; }
+  .opt-text { font-size: 13px; font-family: 'Arial', sans-serif; color: var(--muted); }
+  .opt-correct .opt-text { color: var(--text); font-weight: 600; }
+  .correct-badge { font-size: 10.5px; padding: 2px 8px; border-radius: 20px; background: var(--green-bg); color: var(--green); font-weight: 700; font-family: 'Arial', sans-serif; margin-left: 6px; }
+
+  .meta-row { display: flex; gap: 1.25rem; flex-wrap: wrap; margin-top: 0.3rem; }
+  .meta-item { font-size: 12.5px; color: var(--muted); font-family: 'Arial', sans-serif; }
+  .meta-item b { color: var(--text); font-weight: 600; }
+  .key-saved { font-size: 12px; color: var(--teal); font-family: 'Arial', sans-serif; margin-left: 8px; display: none; }
 </style>
 </head>
 <body>
-<div class="page">
+<div class="wrap">
 
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:.4rem">
-    <span class="badge b-blue">SOP → AI Training System</span>
-    <span id="stag" class="badge b-gray">Ready</span>
-  </div>
-  <h1>Training Content Generator</h1>
-  <p class="sub">Paste any SOP document to extract a structured summary, step-by-step training content, and quiz questions automatically.</p>
-
-  <div class="panel">
-    <div class="row">
-      <p class="sl" style="margin:0">Input · SOP document</p>
-      <button class="btn-sm" onclick="loadSample()">Load sample SOP</button>
+  <!-- Header -->
+  <div style="margin-bottom:2rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:0.5rem;">
+      <span class="tag tag-blue">Problem 4 · AI Automation Internship</span>
+      <span id="statusTag" class="tag tag-gray">Ready</span>
     </div>
-    <textarea id="sop" placeholder="Paste your Standard Operating Procedure here..."></textarea>
-    <div class="row" style="margin-top:.5rem;margin-bottom:0">
-      <span class="cc" id="cc">0 characters</span>
-      <button class="btn btn-primary" id="gb" onclick="gen()">Generate training content →</button>
-    </div>
-    <div id="lwrap">
-      <div class="lbar"><div class="lf" id="lf"></div></div>
-      <p class="lmsg" id="lm">Processing...</p>
-    </div>
+    <h1 style="font-family:'Georgia',serif;font-size:26px;font-weight:400;letter-spacing:-0.02em;margin-bottom:0.3rem;">SOP → AI Training System</h1>
+    <p style="font-size:15px;color:var(--muted);font-family:'Arial',sans-serif;line-height:1.5;">Paste any Standard Operating Procedure. The system automatically extracts a structured summary, step-by-step training content, and quiz questions.</p>
   </div>
 
-  <div class="fb" id="fb">
-    <h3>⚠ API not reachable from this browser</h3>
-    <p>Copy the prompt below → paste into a new Claude chat at claude.ai → copy the JSON response → paste it back here to render your output.</p>
-    <div class="pbox" id="pb"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem">
-      <button class="btn" id="cpb" onclick="copyP()">Copy prompt</button>
-      <button class="btn-sm" style="height:38px;font-size:13px;padding:0 1rem" onclick="window.open('https://claude.ai/new','_blank')">Open Claude.ai ↗</button>
+  <hr>
+
+  <!-- API Key -->
+  <div style="margin-bottom:1.5rem;">
+    <p class="slabel">Step 1 · Enter your Anthropic API key</p>
+    <div class="info-box">
+      Get a free key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → Sign up → API Keys → Create Key. Free credits are included. Your key stays in your browser only.
     </div>
-    <p class="sl">Paste Claude's JSON response here</p>
-    <textarea id="ji" rows="3" placeholder='{"title":"...","summary":[...],"steps":[...],"quiz":[...]}' style="min-height:75px;font-family:monospace;font-size:12px"></textarea>
-    <button class="btn" style="margin-top:.5rem" onclick="renderJ()">Render output →</button>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <input type="password" id="apiKey" placeholder="sk-ant-api03-..." style="flex:1;min-width:220px;" />
+      <button class="btn" onclick="saveKey()">Save key</button>
+      <span class="key-saved" id="keySaved">✓ Key saved</span>
+    </div>
   </div>
 
-  <div id="outputSection">
+  <hr>
+
+  <!-- SOP Input -->
+  <div>
+    <p class="slabel">Step 2 · Paste your SOP document</p>
     <div class="panel">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:1rem">
-        <span style="font-size:18px;font-weight:600;color:var(--text)" id="ot">Output</span>
-        <div id="om" style="display:flex;gap:1rem;flex-wrap:wrap"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;flex-wrap:wrap;gap:8px;">
+        <span style="font-size:13px;color:var(--muted);font-family:'Arial',sans-serif;">Works for any department — HR, Operations, Finance, IT, Customer Support…</span>
+        <button class="btn btn-sm" onclick="loadSample()">Load sample SOP ↓</button>
       </div>
-
-      <p class="sl">1 · Structured summary</p>
-      <div class="card" id="sc"></div>
-
-      <div class="divider"></div>
-      <p class="sl">2 · Step-by-step training content</p>
-      <div id="stc"></div>
-
-      <div class="divider"></div>
-      <p class="sl">3 · Evaluation / quiz questions</p>
-      <div id="qc"></div>
-
-      <div class="divider"></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-        <div id="otg" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-        <span style="font-size:12px;color:var(--text3)">AI-generated · review before deployment</span>
+      <textarea id="sopInput" placeholder="Paste your SOP text here...&#10;&#10;Example:&#10;Standard Operating Procedure: New Employee Onboarding&#10;Department: HR | Version 2.0&#10;&#10;1. Send welcome email 1 day before joining...&#10;2. Schedule Day 1 orientation session..." oninput="updateChar()"></textarea>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.75rem;flex-wrap:wrap;gap:8px;">
+        <span style="font-size:12px;color:var(--hint);font-family:'Arial',sans-serif;" id="charCount">0 characters</span>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-sm" onclick="clearInput()">Clear</button>
+          <button class="btn btn-primary" id="generateBtn" onclick="generate()">Generate training content ↗</button>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <div id="errorBox" class="error-box"></div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-msg" id="progressMsg">Processing...</div>
+  </div>
+
+  <!-- Output -->
+  <div class="output-wrap" id="outputWrap">
+    <hr>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:1.25rem;">
+      <div>
+        <div id="outputTitle" style="font-family:'Georgia',serif;font-size:20px;font-weight:400;"></div>
+        <div class="meta-row" id="metaRow"></div>
+      </div>
+      <button class="btn btn-sm" onclick="resetOutput()">← New SOP</button>
+    </div>
+
+    <p class="slabel">1 · Structured summary</p>
+    <div class="card" id="summaryCard"></div>
+
+    <hr>
+    <p class="slabel">2 · Step-by-step training content</p>
+    <div id="stepsContainer"></div>
+
+    <hr>
+    <p class="slabel">3 · Evaluation / quiz questions</p>
+    <div id="quizContainer"></div>
+
+    <hr>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <div id="outputTags" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+      <span style="font-size:11.5px;color:var(--hint);font-family:'Arial',sans-serif;">AI-generated · review before deployment</span>
     </div>
   </div>
 
 </div>
 <script>
-const SAMPLE=`Standard Operating Procedure: Customer Complaint Handling
+const SAMPLE = `Standard Operating Procedure: Customer Complaint Handling
 Department: Customer Support | SOP ID: CS-001 | Version 1.0
 
-Purpose: This SOP defines the process for handling customer complaints to ensure timely resolution and customer satisfaction.
+Purpose: This SOP defines the process for handling customer complaints to ensure timely resolution and high satisfaction.
 
-1. Receipt of Complaint: All complaints received via email, phone, or chat must be logged in the CRM system within 1 hour of receipt. The support agent assigns a unique ticket ID and sends an acknowledgment to the customer within 2 hours.
+1. Receipt of Complaint: All complaints received via email, phone, or live chat must be logged in the CRM system within 1 hour. The support agent assigns a unique ticket ID and sends an acknowledgement to the customer within 2 hours.
 
-2. Complaint Classification: The agent classifies the complaint as Low, Medium, or High priority based on business impact. High-priority complaints (billing errors, service outages) must be escalated to a senior agent immediately.
+2. Complaint Classification: The agent classifies the complaint as Low, Medium, or High priority. High-priority complaints (billing errors, service outages, legal threats) must be escalated to a senior agent immediately.
 
-3. Investigation: The assigned agent investigates the issue by reviewing order history, logs, and previous interactions. Investigation must be completed within 24 hours for High priority and 48 hours for Medium or Low priority.
+3. Investigation: The assigned agent investigates by reviewing order history, interaction logs, and account details. Investigation must be completed within 24 hours for High priority and 48 hours for Medium or Low priority cases.
 
-4. Resolution: The agent proposes a resolution (refund, replacement, or apology) and communicates it to the customer with a clear timeline. All resolutions above $500 in value require team lead approval.
+4. Resolution: The agent proposes a resolution (refund, replacement, apology, account credit) and communicates it with a clear timeline. Resolutions above $500 must be approved by a team lead before communicating to the customer.
 
-5. Closure and Follow-up: Once resolved, the ticket is marked closed in the CRM. A follow-up email is sent to the customer within 48 hours to confirm satisfaction. If unsatisfied, the ticket is reopened and escalated to the manager.
+5. Closure and Follow-up: Once resolved, the ticket is marked closed in the CRM. A follow-up email is sent within 48 hours to confirm satisfaction. If dissatisfied, the ticket is reopened and escalated to the manager.
 
-6. Reporting: All complaints are reviewed in weekly team meetings. Trends are reported to the Quality Assurance team monthly to identify process improvements.`;
+6. Reporting: All complaints are reviewed in a weekly team meeting. Trends are reported to the Quality Assurance team monthly to drive process improvements.`;
 
-let pr='';
-function loadSample(){document.getElementById('sop').value=SAMPLE;uc()}
-document.getElementById('sop').addEventListener('input',uc);
-function uc(){document.getElementById('cc').textContent=document.getElementById('sop').value.length.toLocaleString()+' characters'}
-function ss(t,c){const e=document.getElementById('stag');e.textContent=t;e.className='badge '+c}
-function bp(sop){return`You are an AI training content generator. Analyze the SOP below and respond ONLY with a valid JSON object. No markdown, no code fences, no explanation — just raw JSON.
+let savedKey = '';
 
-Structure:
-{"title":"SOP title 3-6 words","department":"dept or General","version":"version or 1.0","summary":["4 bullet points, 1-2 sentences each"],"steps":[{"title":"step name","timing":"e.g. Day 1 or Within 24hrs","description":"2-3 sentence explanation"}],"quiz":[{"question":"?","options":["A","B","C","D"],"correct":0}]}
+function saveKey() {
+  const k = document.getElementById('apiKey').value.trim();
+  if (!k.startsWith('sk-')) { showError('Please enter a valid Anthropic API key (starts with sk-ant-...).'); return; }
+  savedKey = k;
+  hideError();
+  const s = document.getElementById('keySaved');
+  s.style.display = 'inline';
+  setTimeout(() => s.style.display = 'none', 3000);
+}
 
-Rules: summary=exactly 4 items, steps=4-6 items, quiz=exactly 5 MCQs, correct=0-based index. Only use info from the SOP.
+function loadSample() { document.getElementById('sopInput').value = SAMPLE; updateChar(); }
+function clearInput() { document.getElementById('sopInput').value = ''; updateChar(); }
+function updateChar() {
+  document.getElementById('charCount').textContent = document.getElementById('sopInput').value.length.toLocaleString() + ' characters';
+}
+function resetOutput() {
+  document.getElementById('outputWrap').classList.remove('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function setStatus(t, c) { const el = document.getElementById('statusTag'); el.textContent = t; el.className = 'tag ' + c; }
+function showError(m) { const b = document.getElementById('errorBox'); b.innerHTML = m; b.style.display = 'block'; }
+function hideError() { document.getElementById('errorBox').style.display = 'none'; }
+
+function startProgress() {
+  document.getElementById('progressWrap').style.display = 'block';
+  const f = document.getElementById('progressFill');
+  const msgs = ['Reading your SOP...', 'Extracting key concepts...', 'Building training steps...', 'Generating quiz questions...', 'Finalising output...'];
+  const pcts = [10, 30, 55, 78, 92];
+  let i = 0;
+  f.style.width = pcts[0] + '%';
+  document.getElementById('progressMsg').textContent = msgs[0];
+  const iv = setInterval(() => {
+    i++;
+    if (i < pcts.length) { f.style.width = pcts[i] + '%'; document.getElementById('progressMsg').textContent = msgs[i]; }
+    else clearInterval(iv);
+  }, 1300);
+  return iv;
+}
+
+function stopProgress(iv) {
+  clearInterval(iv);
+  document.getElementById('progressFill').style.width = '100%';
+  setTimeout(() => {
+    document.getElementById('progressWrap').style.display = 'none';
+    document.getElementById('progressFill').style.width = '0%';
+  }, 400);
+}
+
+function renderOutput(d) {
+  document.getElementById('outputTitle').textContent = d.title || 'Training Output';
+  const meta = document.getElementById('metaRow');
+  meta.innerHTML = '';
+  if (d.department) meta.innerHTML += `<div class="meta-item">Department: <b>${d.department}</b></div>`;
+  if (d.version) meta.innerHTML += `<div class="meta-item">Version: <b>${d.version}</b></div>`;
+  meta.innerHTML += `<div class="meta-item">Steps: <b>${(d.steps || []).length}</b></div>`;
+  meta.innerHTML += `<div class="meta-item">Quiz Qs: <b>${(d.quiz || []).length}</b></div>`;
+
+  document.getElementById('summaryCard').innerHTML =
+    (d.summary || []).map(p => `<div class="bullet"><div class="dot"></div><div>${p}</div></div>`).join('');
+
+  document.getElementById('stepsContainer').innerHTML =
+    (d.steps || []).map((s, i) => `
+      <div class="card">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div class="step-num">${i + 1}</div>
+          <div>
+            <div><span class="step-title">${s.title}</span>${s.timing ? `<span class="step-timing">— ${s.timing}</span>` : ''}</div>
+            <div class="step-desc">${s.description}</div>
+          </div>
+        </div>
+      </div>`).join('');
+
+  const L = ['A', 'B', 'C', 'D'];
+  document.getElementById('quizContainer').innerHTML =
+    (d.quiz || []).map((q, qi) => `
+      <div class="card" style="margin-bottom:0.6rem;">
+        <div class="quiz-q">Q${qi + 1} · ${q.question}</div>
+        ${(q.options || []).map((opt, oi) => `
+          <div class="quiz-opt ${oi === q.correct ? 'opt-correct' : ''}">
+            <div class="opt-letter">${L[oi]}</div>
+            <span class="opt-text">${opt}</span>
+            ${oi === q.correct ? '<span class="correct-badge">Correct</span>' : ''}
+          </div>`).join('')}
+      </div>`).join('');
+
+  document.getElementById('outputTags').innerHTML = `
+    <span class="tag tag-teal">${(d.steps || []).length} steps extracted</span>
+    <span class="tag tag-amber">${(d.quiz || []).length} quiz questions</span>
+    <span class="tag tag-green">Training-ready</span>`;
+
+  document.getElementById('outputWrap').classList.add('show');
+  document.getElementById('outputWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function generate() {
+  hideError();
+  const sop = document.getElementById('sopInput').value.trim();
+  const key = savedKey || document.getElementById('apiKey').value.trim();
+
+  if (!key || !key.startsWith('sk-')) {
+    showError('Please enter and save your Anthropic API key first (Step 1).<br>Get a free key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> — free credits included on signup.');
+    return;
+  }
+  if (sop.length < 50) { showError('Please enter a valid SOP document (minimum 50 characters).'); return; }
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  setStatus('Processing...', 'tag-amber');
+  document.getElementById('outputWrap').classList.remove('show');
+  const iv = startProgress();
+
+  const prompt = `You are an AI training content generator. Analyze the SOP and respond ONLY with valid JSON — no markdown, no code fences, no explanation.
+
+JSON structure:
+{
+  "title": "SOP title (3-6 words)",
+  "department": "Department if mentioned, else General",
+  "version": "Version if mentioned, else 1.0",
+  "summary": ["4 bullets, 1-2 sentences each describing key points"],
+  "steps": [{"title": "Step name", "timing": "When (Day 1 / Within 24hrs / Ongoing / etc.)", "description": "2-3 sentences on what to do and who is responsible"}],
+  "quiz": [{"question": "Question?", "options": ["Option A","Option B","Option C","Option D"], "correct": 0}]
+}
+
+Rules: summary = exactly 4 bullets. steps = 4 to 6. quiz = exactly 5 MCQs, 4 options each. correct = 0-based index of right answer. Ground everything strictly in the SOP text.
 
 SOP:
-${sop}`}
+${sop}`;
 
-let iv=null;
-function sl2(){
-  const msgs=['Reading your SOP...','Extracting key concepts...','Building training steps...','Generating quiz questions...','Finalising...'];
-  const ts=[10,30,55,80,95];
-  const f=document.getElementById('lf'),m=document.getElementById('lm');
-  document.getElementById('lwrap').style.display='block';
-  f.style.width=ts[0]+'%';m.textContent=msgs[0];let i=0;
-  iv=setInterval(()=>{i++;if(i<ts.length){f.style.width=ts[i]+'%';m.textContent=msgs[i];}},1100);
-}
-function xl(){
-  clearInterval(iv);const f=document.getElementById('lf');f.style.width='100%';
-  setTimeout(()=>{document.getElementById('lwrap').style.display='none';f.style.width='0%';},400);
-}
-async function gen(){
-  const sop=document.getElementById('sop').value.trim();
-  if(sop.length<50){alert('Please enter a valid SOP (at least 50 characters).');return;}
-  document.getElementById('fb').style.display='none';
-  document.getElementById('outputSection').style.display='none';
-  document.getElementById('gb').disabled=true;
-  ss('Processing...','b-amber');
-  pr=bp(sop);sl2();
-  try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:pr}]})
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        messages: [{ role: 'user', content: prompt }]
+      })
     });
-    const d=await r.json();xl();
-    if(!r.ok)throw new Error(d.error?.message||'status '+r.status);
-    const raw=(d.content||[]).map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
-    ro(JSON.parse(raw));ss('Complete','b-teal');
-  }catch(e){
-    xl();ss('Use fallback','b-amber');
-    document.getElementById('pb').textContent=pr;
-    document.getElementById('fb').style.display='block';
-    document.getElementById('fb').scrollIntoView({behavior:'smooth',block:'start'});
+
+    const data = await res.json();
+    stopProgress(iv);
+
+    if (!res.ok) throw new Error(data.error?.message || `API error ${res.status}`);
+
+    const raw = (data.content || []).map(b => b.text || '').join('').trim();
+    const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    renderOutput(parsed);
+    setStatus('Complete', 'tag-teal');
+
+  } catch (err) {
+    stopProgress(iv);
+    showError('Error: ' + err.message + ' — Please check your API key and try again.');
+    setStatus('Error', 'tag-gray');
   }
-  document.getElementById('gb').disabled=false;
-}
-function copyP(){
-  navigator.clipboard.writeText(pr).then(()=>{
-    const b=document.getElementById('cpb');b.textContent='Copied!';
-    setTimeout(()=>{b.textContent='Copy prompt';},2200);
-  });
-}
-function renderJ(){
-  try{
-    ro(JSON.parse(document.getElementById('ji').value.replace(/```json|```/g,'').trim()));
-    ss('Complete','b-teal');
-    document.getElementById('fb').style.display='none';
-  }catch(e){alert('Invalid JSON. Copy the full response from Claude.');}
-}
-function ro(d){
-  document.getElementById('ot').textContent=d.title||'Output';
-  const m=document.getElementById('om');m.innerHTML='';
-  if(d.department)m.innerHTML+=`<span style="font-size:13px;color:var(--text2)">Department: <b style="font-weight:500;color:var(--text)">${d.department}</b></span>`;
-  if(d.version)m.innerHTML+=`<span style="font-size:13px;color:var(--text2)">Version: <b style="font-weight:500;color:var(--text)">${d.version}</b></span>`;
-  document.getElementById('sc').innerHTML=(d.summary||[]).map(p=>`<div class="bul"><div class="dot"></div><div>${p}</div></div>`).join('');
-  document.getElementById('stc').innerHTML=(d.steps||[]).map((s,i)=>`<div class="card"><div style="display:flex;gap:12px;align-items:flex-start"><div class="sn">${i+1}</div><div><div style="font-weight:500;font-size:14px;color:var(--text);margin-bottom:3px">${s.title}${s.timing?`<span style="font-size:12px;font-weight:400;color:var(--text2);margin-left:6px">— ${s.timing}</span>`:''}</div><div style="font-size:13px;color:var(--text2);line-height:1.65">${s.description}</div></div></div></div>`).join('');
-  const L=['A','B','C','D'];
-  document.getElementById('qc').innerHTML=(d.quiz||[]).map((q,qi)=>`<div class="card"><div style="font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:.6rem">Q${qi+1} · ${q.question}</div>${(q.options||[]).map((o,oi)=>`<div style="display:flex;gap:8px;align-items:center;margin-bottom:5px"><div class="ql">${L[oi]}</div><span style="font-size:13px;${oi===q.correct?'color:var(--text);font-weight:500':'color:var(--text2)'}">${o}</span>${oi===q.correct?'<span class="cb">Correct</span>':''}</div>`).join('')}</div>`).join('');
-  document.getElementById('otg').innerHTML=`<span class="badge b-teal">${(d.steps||[]).length} steps extracted</span><span class="badge b-amber">${(d.quiz||[]).length} quiz questions</span><span class="badge b-green">Training-ready</span>`;
-  document.getElementById('outputSection').style.display='block';
-  document.getElementById('outputSection').scrollIntoView({behavior:'smooth',block:'start'});
+
+  btn.disabled = false;
 }
 </script>
 </body>
