@@ -15,32 +15,29 @@
     --amber-bg: #faeedd; --amber: #7a4a0a;
     --green-bg: #e8f3dc; --green: #2a5a0e;
     --red-bg: #fce8e8; --red: #a02828;
+    --yellow-bg: #fefce8; --yellow: #854d0e;
     --accent: #2563eb;
     --radius: 10px; --radius-sm: 6px;
   }
   body { font-family: 'Georgia', serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
   .wrap { max-width: 760px; margin: 0 auto; }
-
   .tag { display: inline-block; font-size: 10.5px; font-weight: 600; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.06em; text-transform: uppercase; font-family: 'Arial', sans-serif; }
   .tag-blue  { background: var(--blue-bg);  color: var(--blue); }
   .tag-teal  { background: var(--teal-bg);  color: var(--teal); }
   .tag-amber { background: var(--amber-bg); color: var(--amber); }
   .tag-green { background: var(--green-bg); color: var(--green); }
   .tag-gray  { background: var(--surface2); color: var(--muted); }
-
   hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
   .slabel { font-size: 10.5px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--hint); font-family: 'Arial', sans-serif; margin-bottom: 0.6rem; }
   .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 0.75rem; }
-
-  input[type="password"], textarea {
+  input[type="text"], textarea {
     width: 100%; border: 1px solid var(--border2); border-radius: var(--radius-sm);
     padding: 0.75rem 1rem; font-size: 13.5px; font-family: 'Arial', sans-serif;
     color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s;
   }
-  input[type="password"]:focus, textarea:focus { border-color: var(--accent); }
-  input[type="password"]::placeholder, textarea::placeholder { color: var(--hint); }
+  input[type="text"]:focus, textarea:focus { border-color: var(--accent); }
+  input[type="text"]::placeholder, textarea::placeholder { color: var(--hint); }
   textarea { resize: vertical; min-height: 170px; line-height: 1.65; }
-
   .btn {
     border-radius: var(--radius-sm); font-family: 'Arial', sans-serif; font-weight: 600;
     cursor: pointer; transition: all 0.15s; border: 1px solid var(--border2);
@@ -53,46 +50,50 @@
   .btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
   .btn-primary:hover { background: #333330; }
   .btn-sm { font-size: 12px; height: 30px; padding: 0 0.85rem; }
-
   .progress-wrap { margin: 0.75rem 0; display: none; }
   .progress-track { height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
   .progress-fill { height: 100%; width: 0%; background: var(--accent); border-radius: 2px; transition: width 0.5s ease; }
   .progress-msg { font-size: 12px; color: var(--muted); font-family: 'Arial', sans-serif; margin-top: 6px; }
-
-  .error-box { background: var(--red-bg); border: 1px solid #f09595; border-radius: var(--radius-sm); padding: 0.7rem 1rem; font-size: 13px; color: var(--red); font-family: 'Arial', sans-serif; display: none; margin-top: 0.5rem; line-height: 1.6; }
-  .info-box { background: var(--blue-bg); border: 1px solid #b5d4f4; border-radius: var(--radius-sm); padding: 0.7rem 1rem; font-size: 13px; color: var(--blue); font-family: 'Arial', sans-serif; line-height: 1.6; margin-bottom: 0.75rem; }
+  .error-box { background: var(--red-bg); border: 1px solid #f09595; border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-size: 13px; color: var(--red); font-family: 'Arial', sans-serif; display: none; margin-top: 0.75rem; line-height: 1.7; }
+  .error-box a { color: var(--red); font-weight: 600; }
+  .warn-box { background: var(--yellow-bg); border: 1px solid #fde047; border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-size: 13px; color: var(--yellow); font-family: 'Arial', sans-serif; line-height: 1.7; margin-bottom: 1rem; display: none; }
+  .warn-box b { font-weight: 700; }
+  .info-box { background: var(--blue-bg); border: 1px solid #b5d4f4; border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-size: 13px; color: var(--blue); font-family: 'Arial', sans-serif; line-height: 1.7; margin-bottom: 0.75rem; }
   .info-box a { color: var(--blue); font-weight: 600; }
-
+  .info-step { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 4px; }
+  .info-num { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 2px; font-family: 'Arial', sans-serif; }
   .output-wrap { display: none; }
   .output-wrap.show { display: block; }
-
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 0.6rem; }
   .bullet { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 0.55rem; font-size: 14px; line-height: 1.65; font-family: 'Arial', sans-serif; color: var(--text); }
   .bullet:last-child { margin-bottom: 0; }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 8px; }
-
   .step-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--blue-bg); color: var(--blue); font-size: 12px; font-weight: 700; flex-shrink: 0; font-family: 'Arial', sans-serif; }
   .step-title { font-weight: 700; font-size: 14px; color: var(--text); font-family: 'Arial', sans-serif; }
   .step-timing { font-size: 12px; font-weight: 400; color: var(--muted); margin-left: 4px; }
   .step-desc { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.6; font-family: 'Arial', sans-serif; }
-
   .quiz-q { font-size: 13.5px; font-weight: 700; color: var(--text); font-family: 'Arial', sans-serif; margin-bottom: 0.65rem; }
   .quiz-opt { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
   .opt-letter { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: var(--radius-sm); background: var(--surface2); color: var(--muted); font-size: 11.5px; font-weight: 700; flex-shrink: 0; font-family: 'Arial', sans-serif; }
   .opt-text { font-size: 13px; font-family: 'Arial', sans-serif; color: var(--muted); }
   .opt-correct .opt-text { color: var(--text); font-weight: 600; }
   .correct-badge { font-size: 10.5px; padding: 2px 8px; border-radius: 20px; background: var(--green-bg); color: var(--green); font-weight: 700; font-family: 'Arial', sans-serif; margin-left: 6px; }
-
   .meta-row { display: flex; gap: 1.25rem; flex-wrap: wrap; margin-top: 0.3rem; }
   .meta-item { font-size: 12.5px; color: var(--muted); font-family: 'Arial', sans-serif; }
   .meta-item b { color: var(--text); font-weight: 600; }
-  .key-saved { font-size: 12px; color: var(--teal); font-family: 'Arial', sans-serif; margin-left: 8px; display: none; }
+  .key-indicator { font-size: 12px; font-family: 'Arial', sans-serif; margin-top: 6px; }
+  .key-ok { color: var(--teal); } .key-empty { color: var(--hint); }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- Header -->
+  <!-- Local file warning — shown automatically if opened as file:// -->
+  <div id="localWarn" class="warn-box">
+    <b>⚠ You are opening this as a local file — API calls will not work.</b><br>
+    You must upload this file to GitHub Pages and open it from the <b>https://</b> link for the system to work. See the setup instructions you received.
+  </div>
+
   <div style="margin-bottom:2rem;">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:0.5rem;">
       <span class="tag tag-blue">Problem 4 · AI Automation Internship</span>
@@ -106,15 +107,14 @@
 
   <!-- API Key -->
   <div style="margin-bottom:1.5rem;">
-    <p class="slabel">Step 1 · Enter your Anthropic API key</p>
+    <p class="slabel">Step 1 · Enter your free Gemini API key</p>
     <div class="info-box">
-      Get a free key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → Sign up → API Keys → Create Key. Free credits are included. Your key stays in your browser only.
+      <div class="info-step"><div class="info-num">1</div><div>Go to <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a> and sign in with your Google account</div></div>
+      <div class="info-step"><div class="info-num">2</div><div>Click <b>"Create API key"</b> → select any project → copy the key</div></div>
+      <div class="info-step" style="margin-bottom:0;"><div class="info-num">3</div><div>Paste it below — completely free, no card needed</div></div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-      <input type="password" id="apiKey" placeholder="sk-ant-api03-..." style="flex:1;min-width:220px;" />
-      <button class="btn" onclick="saveKey()">Save key</button>
-      <span class="key-saved" id="keySaved">✓ Key saved</span>
-    </div>
+    <input type="text" id="apiKey" placeholder="Paste your Gemini API key here (AIza...)" oninput="onKeyInput()" autocomplete="off" spellcheck="false" />
+    <div id="keyIndicator" class="key-indicator key-empty">No key entered yet</div>
   </div>
 
   <hr>
@@ -127,7 +127,7 @@
         <span style="font-size:13px;color:var(--muted);font-family:'Arial',sans-serif;">Works for any department — HR, Operations, Finance, IT, Customer Support…</span>
         <button class="btn btn-sm" onclick="loadSample()">Load sample SOP ↓</button>
       </div>
-      <textarea id="sopInput" placeholder="Paste your SOP text here...&#10;&#10;Example:&#10;Standard Operating Procedure: New Employee Onboarding&#10;Department: HR | Version 2.0&#10;&#10;1. Send welcome email 1 day before joining...&#10;2. Schedule Day 1 orientation session..." oninput="updateChar()"></textarea>
+      <textarea id="sopInput" placeholder="Paste your SOP text here..." oninput="updateChar()"></textarea>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.75rem;flex-wrap:wrap;gap:8px;">
         <span style="font-size:12px;color:var(--hint);font-family:'Arial',sans-serif;" id="charCount">0 characters</span>
         <div style="display:flex;gap:8px;">
@@ -155,18 +155,14 @@
       </div>
       <button class="btn btn-sm" onclick="resetOutput()">← New SOP</button>
     </div>
-
     <p class="slabel">1 · Structured summary</p>
     <div class="card" id="summaryCard"></div>
-
     <hr>
     <p class="slabel">2 · Step-by-step training content</p>
     <div id="stepsContainer"></div>
-
     <hr>
     <p class="slabel">3 · Evaluation / quiz questions</p>
     <div id="quizContainer"></div>
-
     <hr>
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
       <div id="outputTags" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
@@ -175,7 +171,14 @@
   </div>
 
 </div>
-<script>
+<script type="module">
+// Show warning if running as local file
+if (location.protocol === 'file:') {
+  document.getElementById('localWarn').style.display = 'block';
+}
+
+import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.21.0";
+
 const SAMPLE = `Standard Operating Procedure: Customer Complaint Handling
 Department: Customer Support | SOP ID: CS-001 | Version 1.0
 
@@ -193,170 +196,143 @@ Purpose: This SOP defines the process for handling customer complaints to ensure
 
 6. Reporting: All complaints are reviewed in a weekly team meeting. Trends are reported to the Quality Assurance team monthly to drive process improvements.`;
 
-let savedKey = '';
-
-function saveKey() {
-  const k = document.getElementById('apiKey').value.trim();
-  if (!k.startsWith('sk-')) { showError('Please enter a valid Anthropic API key (starts with sk-ant-...).'); return; }
-  savedKey = k;
-  hideError();
-  const s = document.getElementById('keySaved');
-  s.style.display = 'inline';
-  setTimeout(() => s.style.display = 'none', 3000);
-}
-
-function loadSample() { document.getElementById('sopInput').value = SAMPLE; updateChar(); }
-function clearInput() { document.getElementById('sopInput').value = ''; updateChar(); }
-function updateChar() {
+window.loadSample = () => { document.getElementById('sopInput').value = SAMPLE; updateChar(); };
+window.clearInput = () => { document.getElementById('sopInput').value = ''; updateChar(); };
+window.updateChar = () => {
   document.getElementById('charCount').textContent = document.getElementById('sopInput').value.length.toLocaleString() + ' characters';
-}
-function resetOutput() {
-  document.getElementById('outputWrap').classList.remove('show');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-function setStatus(t, c) { const el = document.getElementById('statusTag'); el.textContent = t; el.className = 'tag ' + c; }
-function showError(m) { const b = document.getElementById('errorBox'); b.innerHTML = m; b.style.display = 'block'; }
-function hideError() { document.getElementById('errorBox').style.display = 'none'; }
+};
+window.resetOutput = () => { document.getElementById('outputWrap').classList.remove('show'); window.scrollTo({top:0,behavior:'smooth'}); };
+window.onKeyInput = () => {
+  const k = document.getElementById('apiKey').value.trim();
+  const ind = document.getElementById('keyIndicator');
+  if (k.length > 10) { ind.textContent = '✓ Key ready'; ind.className = 'key-indicator key-ok'; }
+  else { ind.textContent = 'No key entered yet'; ind.className = 'key-indicator key-empty'; }
+};
 
-function startProgress() {
-  document.getElementById('progressWrap').style.display = 'block';
-  const f = document.getElementById('progressFill');
-  const msgs = ['Reading your SOP...', 'Extracting key concepts...', 'Building training steps...', 'Generating quiz questions...', 'Finalising output...'];
-  const pcts = [10, 30, 55, 78, 92];
-  let i = 0;
-  f.style.width = pcts[0] + '%';
-  document.getElementById('progressMsg').textContent = msgs[0];
-  const iv = setInterval(() => {
-    i++;
-    if (i < pcts.length) { f.style.width = pcts[i] + '%'; document.getElementById('progressMsg').textContent = msgs[i]; }
-    else clearInterval(iv);
-  }, 1300);
+function setStatus(t,c){ const el=document.getElementById('statusTag'); el.textContent=t; el.className='tag '+c; }
+function showError(m){ const b=document.getElementById('errorBox'); b.innerHTML=m; b.style.display='block'; b.scrollIntoView({behavior:'smooth',block:'center'}); }
+function hideError(){ document.getElementById('errorBox').style.display='none'; }
+
+function startProgress(){
+  document.getElementById('progressWrap').style.display='block';
+  const f=document.getElementById('progressFill');
+  const msgs=['Reading your SOP...','Extracting key concepts...','Building training steps...','Generating quiz questions...','Finalising output...'];
+  const pcts=[10,30,55,78,92]; let i=0;
+  f.style.width=pcts[0]+'%'; document.getElementById('progressMsg').textContent=msgs[0];
+  const iv=setInterval(()=>{ i++; if(i<pcts.length){f.style.width=pcts[i]+'%'; document.getElementById('progressMsg').textContent=msgs[i];}else clearInterval(iv); },1300);
   return iv;
 }
-
-function stopProgress(iv) {
-  clearInterval(iv);
-  document.getElementById('progressFill').style.width = '100%';
-  setTimeout(() => {
-    document.getElementById('progressWrap').style.display = 'none';
-    document.getElementById('progressFill').style.width = '0%';
-  }, 400);
+function stopProgress(iv){
+  clearInterval(iv); document.getElementById('progressFill').style.width='100%';
+  setTimeout(()=>{ document.getElementById('progressWrap').style.display='none'; document.getElementById('progressFill').style.width='0%'; },400);
 }
 
-function renderOutput(d) {
-  document.getElementById('outputTitle').textContent = d.title || 'Training Output';
-  const meta = document.getElementById('metaRow');
-  meta.innerHTML = '';
-  if (d.department) meta.innerHTML += `<div class="meta-item">Department: <b>${d.department}</b></div>`;
-  if (d.version) meta.innerHTML += `<div class="meta-item">Version: <b>${d.version}</b></div>`;
-  meta.innerHTML += `<div class="meta-item">Steps: <b>${(d.steps || []).length}</b></div>`;
-  meta.innerHTML += `<div class="meta-item">Quiz Qs: <b>${(d.quiz || []).length}</b></div>`;
+function renderOutput(d){
+  document.getElementById('outputTitle').textContent=d.title||'Training Output';
+  const meta=document.getElementById('metaRow'); meta.innerHTML='';
+  if(d.department) meta.innerHTML+=`<div class="meta-item">Department: <b>${d.department}</b></div>`;
+  if(d.version) meta.innerHTML+=`<div class="meta-item">Version: <b>${d.version}</b></div>`;
+  meta.innerHTML+=`<div class="meta-item">Steps: <b>${(d.steps||[]).length}</b></div>`;
+  meta.innerHTML+=`<div class="meta-item">Quiz Qs: <b>${(d.quiz||[]).length}</b></div>`;
 
-  document.getElementById('summaryCard').innerHTML =
-    (d.summary || []).map(p => `<div class="bullet"><div class="dot"></div><div>${p}</div></div>`).join('');
+  document.getElementById('summaryCard').innerHTML=
+    (d.summary||[]).map(p=>`<div class="bullet"><div class="dot"></div><div>${p}</div></div>`).join('');
 
-  document.getElementById('stepsContainer').innerHTML =
-    (d.steps || []).map((s, i) => `
-      <div class="card">
-        <div style="display:flex;gap:12px;align-items:flex-start;">
-          <div class="step-num">${i + 1}</div>
-          <div>
-            <div><span class="step-title">${s.title}</span>${s.timing ? `<span class="step-timing">— ${s.timing}</span>` : ''}</div>
-            <div class="step-desc">${s.description}</div>
-          </div>
-        </div>
-      </div>`).join('');
+  document.getElementById('stepsContainer').innerHTML=
+    (d.steps||[]).map((s,i)=>`
+      <div class="card"><div style="display:flex;gap:12px;align-items:flex-start;">
+        <div class="step-num">${i+1}</div>
+        <div><div><span class="step-title">${s.title}</span>${s.timing?`<span class="step-timing">— ${s.timing}</span>`:''}</div>
+        <div class="step-desc">${s.description}</div></div>
+      </div></div>`).join('');
 
-  const L = ['A', 'B', 'C', 'D'];
-  document.getElementById('quizContainer').innerHTML =
-    (d.quiz || []).map((q, qi) => `
+  const L=['A','B','C','D'];
+  document.getElementById('quizContainer').innerHTML=
+    (d.quiz||[]).map((q,qi)=>`
       <div class="card" style="margin-bottom:0.6rem;">
-        <div class="quiz-q">Q${qi + 1} · ${q.question}</div>
-        ${(q.options || []).map((opt, oi) => `
-          <div class="quiz-opt ${oi === q.correct ? 'opt-correct' : ''}">
+        <div class="quiz-q">Q${qi+1} · ${q.question}</div>
+        ${(q.options||[]).map((opt,oi)=>`
+          <div class="quiz-opt ${oi===q.correct?'opt-correct':''}">
             <div class="opt-letter">${L[oi]}</div>
             <span class="opt-text">${opt}</span>
-            ${oi === q.correct ? '<span class="correct-badge">Correct</span>' : ''}
+            ${oi===q.correct?'<span class="correct-badge">Correct</span>':''}
           </div>`).join('')}
       </div>`).join('');
 
-  document.getElementById('outputTags').innerHTML = `
-    <span class="tag tag-teal">${(d.steps || []).length} steps extracted</span>
-    <span class="tag tag-amber">${(d.quiz || []).length} quiz questions</span>
+  document.getElementById('outputTags').innerHTML=`
+    <span class="tag tag-teal">${(d.steps||[]).length} steps extracted</span>
+    <span class="tag tag-amber">${(d.quiz||[]).length} quiz questions</span>
     <span class="tag tag-green">Training-ready</span>`;
 
   document.getElementById('outputWrap').classList.add('show');
-  document.getElementById('outputWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('outputWrap').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-async function generate() {
+window.generate = async function() {
   hideError();
-  const sop = document.getElementById('sopInput').value.trim();
-  const key = savedKey || document.getElementById('apiKey').value.trim();
+  if (location.protocol === 'file:') {
+    showError('<b>This file must be hosted on GitHub Pages to work.</b><br>Open it from your GitHub Pages URL (https://pich07.github.io/sop-training-system/) — not as a local file.');
+    return;
+  }
 
-  if (!key || !key.startsWith('sk-')) {
-    showError('Please enter and save your Anthropic API key first (Step 1).<br>Get a free key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> — free credits included on signup.');
+  const sop = document.getElementById('sopInput').value.trim();
+  const key = document.getElementById('apiKey').value.trim();
+
+  if (!key || key.length < 10) {
+    showError('Please paste your Gemini API key in Step 1.<br>Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a> — no card needed.');
     return;
   }
   if (sop.length < 50) { showError('Please enter a valid SOP document (minimum 50 characters).'); return; }
 
   const btn = document.getElementById('generateBtn');
   btn.disabled = true;
-  setStatus('Processing...', 'tag-amber');
+  setStatus('Processing...','tag-amber');
   document.getElementById('outputWrap').classList.remove('show');
   const iv = startProgress();
 
-  const prompt = `You are an AI training content generator. Analyze the SOP and respond ONLY with valid JSON — no markdown, no code fences, no explanation.
+  const prompt = `You are an AI training content generator. Analyze the SOP below and respond ONLY with a valid JSON object. No markdown, no code fences, no explanation — just raw JSON.
 
 JSON structure:
 {
   "title": "SOP title (3-6 words)",
   "department": "Department if mentioned, else General",
   "version": "Version if mentioned, else 1.0",
-  "summary": ["4 bullets, 1-2 sentences each describing key points"],
-  "steps": [{"title": "Step name", "timing": "When (Day 1 / Within 24hrs / Ongoing / etc.)", "description": "2-3 sentences on what to do and who is responsible"}],
-  "quiz": [{"question": "Question?", "options": ["Option A","Option B","Option C","Option D"], "correct": 0}]
+  "summary": ["bullet 1 (1-2 sentences)", "bullet 2", "bullet 3", "bullet 4"],
+  "steps": [{"title": "Step name", "timing": "When (e.g. Day 1, Within 24hrs, Ongoing)", "description": "2-3 sentence explanation"}],
+  "quiz": [{"question": "Question?", "options": ["A","B","C","D"], "correct": 0}]
 }
 
-Rules: summary = exactly 4 bullets. steps = 4 to 6. quiz = exactly 5 MCQs, 4 options each. correct = 0-based index of right answer. Ground everything strictly in the SOP text.
+Rules: summary = exactly 4 bullets. steps = 4-6. quiz = exactly 5 MCQs, 4 options each. correct = 0-based index. Ground everything in the SOP.
 
 SOP:
 ${sop}`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1500,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
+    const genAI = new GoogleGenerativeAI(key);
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const result = await model.generateContent(prompt);
+    const raw = result.response.text();
 
-    const data = await res.json();
     stopProgress(iv);
 
-    if (!res.ok) throw new Error(data.error?.message || `API error ${res.status}`);
-
-    const raw = (data.content || []).map(b => b.text || '').join('').trim();
-    const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    if (!raw) throw new Error('Empty response. Please try again.');
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
     renderOutput(parsed);
-    setStatus('Complete', 'tag-teal');
+    setStatus('Complete','tag-teal');
 
-  } catch (err) {
+  } catch(err) {
     stopProgress(iv);
-    showError('Error: ' + err.message + ' — Please check your API key and try again.');
-    setStatus('Error', 'tag-gray');
+    let msg = err.message || 'Unknown error';
+    if (msg.includes('API_KEY_INVALID') || msg.includes('API key')) msg = 'Invalid API key. Please double-check the key from Google AI Studio.';
+    else if (msg.includes('quota') || msg.includes('RESOURCE_EXHAUSTED')) msg = 'API quota exceeded. Please wait a minute and try again.';
+    else if (msg.includes('fetch') || msg.includes('network') || msg.includes('Failed')) msg = 'Network error. Make sure you are opening this from the GitHub Pages URL (https://), not a local file.';
+    showError('Error: ' + msg);
+    setStatus('Error','tag-gray');
   }
 
   btn.disabled = false;
-}
+};
 </script>
 </body>
 </html>
