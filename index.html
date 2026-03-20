@@ -273,7 +273,7 @@ SOP:
 ${sop}`;
 
   try {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(key)}`;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(key)}`;
 
     const res = await fetch(endpoint, {
       method: 'POST',
@@ -287,15 +287,14 @@ ${sop}`;
     const data = await res.json();
     stopProgress(iv);
 
+    // Show the real API error — no masking
     if (!res.ok) {
-      const apiMsg = data?.error?.message || `HTTP ${res.status}`;
-      if (res.status === 400 || apiMsg.toLowerCase().includes('api key')) throw new Error('Invalid API key. Please check your key from Google AI Studio.');
-      if (res.status === 429) throw new Error('Too many requests. Please wait 30 seconds and try again.');
-      throw new Error(apiMsg);
+      const apiMsg = data?.error?.message || `HTTP ${res.status} — ${JSON.stringify(data)}`;
+      throw new Error(`[${res.status}] ${apiMsg}`);
     }
 
     const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    if (!raw) throw new Error('Empty response from Gemini. Please try again.');
+    if (!raw) throw new Error('Empty response from Gemini. Full response: ' + JSON.stringify(data));
 
     const clean = raw.replace(/```json|```/g,'').trim();
     const parsed = JSON.parse(clean);
