@@ -71,11 +71,25 @@
   .step-timing { font-size: 12px; font-weight: 400; color: var(--muted); margin-left: 4px; }
   .step-desc { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.6; font-family: 'Arial', sans-serif; }
   .quiz-q { font-size: 13.5px; font-weight: 700; color: var(--text); font-family: 'Arial', sans-serif; margin-bottom: 0.65rem; }
-  .quiz-opt { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
-  .opt-letter { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: var(--radius-sm); background: var(--surface2); color: var(--muted); font-size: 11.5px; font-weight: 700; flex-shrink: 0; font-family: 'Arial', sans-serif; }
-  .opt-text { font-size: 13px; font-family: 'Arial', sans-serif; color: var(--muted); }
-  .opt-correct .opt-text { color: var(--text); font-weight: 600; }
-  .correct-badge { font-size: 10.5px; padding: 2px 8px; border-radius: 20px; background: var(--green-bg); color: var(--green); font-weight: 700; font-family: 'Arial', sans-serif; margin-left: 6px; }
+  .quiz-opt { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; cursor: pointer; border-radius: var(--radius-sm); padding: 6px 8px; border: 1px solid transparent; transition: background 0.15s, border-color 0.15s; }
+  .quiz-opt:hover { background: var(--surface2); border-color: var(--border2); }
+  .opt-letter { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: var(--radius-sm); background: var(--surface2); color: var(--muted); font-size: 11.5px; font-weight: 700; flex-shrink: 0; font-family: 'Arial', sans-serif; transition: background 0.15s, color 0.15s; }
+  .opt-text { font-size: 13px; font-family: 'Arial', sans-serif; color: var(--muted); transition: color 0.15s; }
+  .quiz-opt.selected-correct { background: var(--green-bg); border-color: #2a5a0e; }
+  .quiz-opt.selected-correct .opt-letter { background: #2a5a0e; color: #fff; }
+  .quiz-opt.selected-correct .opt-text { color: var(--green); font-weight: 600; }
+  .quiz-opt.selected-wrong { background: var(--red-bg); border-color: #a02828; }
+  .quiz-opt.selected-wrong .opt-letter { background: #a02828; color: #fff; }
+  .quiz-opt.selected-wrong .opt-text { color: var(--red); font-weight: 600; }
+  .quiz-opt.reveal-correct { background: var(--green-bg); border-color: #2a5a0e; }
+  .quiz-opt.reveal-correct .opt-letter { background: #2a5a0e; color: #fff; }
+  .quiz-opt.reveal-correct .opt-text { color: var(--green); font-weight: 600; }
+  .quiz-opt.answered { pointer-events: none; }
+  .quiz-feedback { font-size: 12px; font-family: 'Arial', sans-serif; margin-top: 6px; font-weight: 600; display: none; }
+  .quiz-feedback.correct { color: var(--green); }
+  .quiz-feedback.wrong { color: var(--red); }
+  .quiz-score { font-size: 13px; font-family: 'Arial', sans-serif; color: var(--muted); margin-top: 0.75rem; padding: 0.6rem 1rem; background: var(--surface2); border-radius: var(--radius-sm); display: none; }
+  .quiz-score b { color: var(--text); }
   .meta-row { display: flex; gap: 1.25rem; flex-wrap: wrap; margin-top: 0.3rem; }
   .meta-item { font-size: 12.5px; color: var(--muted); font-family: 'Arial', sans-serif; }
   .meta-item b { color: var(--text); font-weight: 600; }
@@ -343,19 +357,23 @@ function renderOutput(d, modelUsed) {
         <div class="step-desc">${s.description}</div></div>
       </div></div>`).join('');
 
-  // Quiz
+  // Quiz — interactive, answers hidden until user clicks
+  quizScore = 0; quizAnswered = 0;
+  const totalQuestions = (d.quiz||[]).length;
+
   const L = ['A','B','C','D'];
   document.getElementById('quizContainer').innerHTML =
     (d.quiz||[]).map((q,qi) => `
-      <div class="card" style="margin-bottom:0.6rem;">
+      <div class="card" style="margin-bottom:0.6rem;" id="qcard-${qi}">
         <div class="quiz-q">Q${qi+1} · ${q.question}</div>
         ${(q.options||[]).map((opt,oi) => `
-          <div class="quiz-opt ${oi===q.correct?'opt-correct':''}">
+          <div class="quiz-opt" id="qopt-${qi}-${oi}" onclick="answerQuiz(${qi},${oi},${q.correct})">
             <div class="opt-letter">${L[oi]}</div>
             <span class="opt-text">${opt}</span>
-            ${oi===q.correct?'<span class="correct-badge">Correct</span>':''}
           </div>`).join('')}
-      </div>`).join('');
+        <div class="quiz-feedback" id="qfb-${qi}"></div>
+      </div>`).join('') +
+    `<div class="quiz-score" id="quizScore"></div>`;
 
   document.getElementById('outputTags').innerHTML = `
     <span class="tag tag-teal">${(d.steps||[]).length} steps extracted</span>
@@ -364,6 +382,47 @@ function renderOutput(d, modelUsed) {
 
   document.getElementById('outputWrap').classList.add('show');
   document.getElementById('outputWrap').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ── Interactive quiz logic ────────────────────────────────────────
+let quizScore = 0;
+let quizAnswered = 0;
+
+function answerQuiz(qi, chosen, correct) {
+  const totalQuestions = document.querySelectorAll('[id^="qcard-"]').length;
+
+  // Mark all options as answered (disable clicking)
+  for (let i = 0; i < 4; i++) {
+    const opt = document.getElementById(`qopt-${qi}-${i}`);
+    if (opt) opt.classList.add('answered');
+  }
+
+  const chosenEl = document.getElementById(`qopt-${qi}-${chosen}`);
+  const correctEl = document.getElementById(`qopt-${qi}-${correct}`);
+  const fb = document.getElementById(`qfb-${qi}`);
+
+  if (chosen === correct) {
+    chosenEl.classList.add('selected-correct');
+    fb.textContent = '✓ Correct!';
+    fb.className = 'quiz-feedback correct';
+    quizScore++;
+  } else {
+    chosenEl.classList.add('selected-wrong');
+    correctEl.classList.add('reveal-correct');
+    fb.textContent = '✗ Wrong — the correct answer is highlighted above.';
+    fb.className = 'quiz-feedback wrong';
+  }
+  fb.style.display = 'block';
+
+  quizAnswered++;
+  if (quizAnswered === totalQuestions) {
+    const scoreEl = document.getElementById('quizScore');
+    const pct = Math.round((quizScore / totalQuestions) * 100);
+    const msg = pct === 100 ? 'Perfect score!' : pct >= 60 ? 'Good effort!' : 'Keep studying!';
+    scoreEl.innerHTML = `Final score: <b>${quizScore} / ${totalQuestions}</b> (${pct}%) — ${msg}`;
+    scoreEl.style.display = 'block';
+    scoreEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
 // ── API call ──────────────────────────────────────────────────────
