@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>SOP → AI Training System</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -331,7 +331,7 @@ function exportPPTX() {
   const d = currentData;
 
   try {
-    const pptx = new PptxGenJS();
+    const pptx = new pptxgen();
     pptx.layout = 'LAYOUT_WIDE';
 
     const BG    = '1A3A6B';
