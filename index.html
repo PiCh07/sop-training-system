@@ -80,6 +80,7 @@
   .meta-item b { color: var(--text); font-weight: 600; }
   .key-indicator { font-size: 12px; font-family: 'Arial', sans-serif; margin-top: 6px; }
   .key-ok { color: var(--teal); } .key-empty { color: var(--hint); }
+  .model-badge { font-size: 11px; color: var(--teal); font-family: 'Arial', sans-serif; margin-top: 4px; display: none; }
 </style>
 </head>
 <body>
@@ -100,7 +101,7 @@
     <p class="slabel">Step 1 · Enter your free Gemini API key</p>
     <div class="info-box">
       <div class="info-step"><div class="info-num">1</div><div>Go to <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a> and sign in with Google</div></div>
-      <div class="info-step"><div class="info-num">2</div><div>Click <b>"Create API key"</b> → select any project → copy the key</div></div>
+      <div class="info-step"><div class="info-num">2</div><div>Click <b>"Create API key in new project"</b> → copy the key</div></div>
       <div class="info-step" style="margin-bottom:0;"><div class="info-num">3</div><div>Paste below — completely free, no card needed</div></div>
     </div>
     <input type="text" id="apiKey" placeholder="Paste your Gemini API key here (AIza...)" oninput="onKeyInput()" autocomplete="off" spellcheck="false" />
@@ -140,6 +141,7 @@
       <div>
         <div id="outputTitle" style="font-family:'Georgia',serif;font-size:20px;font-weight:400;"></div>
         <div class="meta-row" id="metaRow"></div>
+        <div class="model-badge" id="modelBadge"></div>
       </div>
       <button class="btn btn-sm" onclick="resetOutput()">← New SOP</button>
     </div>
@@ -160,6 +162,15 @@
 
 </div>
 <script>
+// All known working Gemini models — tried in order until one succeeds
+const MODELS = [
+  'gemini-2.5-flash',
+  'gemini-2.0-flash',
+  'gemini-2.0-flash-lite',
+  'gemini-1.5-flash',
+  'gemini-1.5-flash-8b'
+];
+
 const SAMPLE = `Standard Operating Procedure: Customer Complaint Handling
 Department: Customer Support | SOP ID: CS-001 | Version 1.0
 
@@ -191,27 +202,29 @@ function setStatus(t,c) { const el=document.getElementById('statusTag'); el.text
 function showError(m) { const b=document.getElementById('errorBox'); b.innerHTML=m; b.style.display='block'; b.scrollIntoView({behavior:'smooth',block:'center'}); }
 function hideError() { document.getElementById('errorBox').style.display='none'; }
 
+function setProgressMsg(m) { document.getElementById('progressMsg').textContent = m; }
+
 function startProgress() {
   document.getElementById('progressWrap').style.display='block';
   const f=document.getElementById('progressFill');
-  const msgs=['Reading your SOP...','Extracting key concepts...','Building training steps...','Generating quiz questions...','Finalising output...'];
-  const pcts=[10,30,55,78,92]; let i=0;
-  f.style.width=pcts[0]+'%'; document.getElementById('progressMsg').textContent=msgs[0];
-  const iv=setInterval(()=>{ i++; if(i<pcts.length){f.style.width=pcts[i]+'%'; document.getElementById('progressMsg').textContent=msgs[i];}else clearInterval(iv); },1300);
-  return iv;
+  f.style.width='10%'; setProgressMsg('Connecting to AI...');
+  return f;
 }
-function stopProgress(iv) {
-  clearInterval(iv); document.getElementById('progressFill').style.width='100%';
+function stopProgress() {
+  document.getElementById('progressFill').style.width='100%';
   setTimeout(()=>{ document.getElementById('progressWrap').style.display='none'; document.getElementById('progressFill').style.width='0%'; },400);
 }
 
-function renderOutput(d) {
+function renderOutput(d, modelUsed) {
   document.getElementById('outputTitle').textContent = d.title||'Training Output';
   const meta=document.getElementById('metaRow'); meta.innerHTML='';
   if(d.department) meta.innerHTML+=`<div class="meta-item">Department: <b>${d.department}</b></div>`;
   if(d.version) meta.innerHTML+=`<div class="meta-item">Version: <b>${d.version}</b></div>`;
   meta.innerHTML+=`<div class="meta-item">Steps: <b>${(d.steps||[]).length}</b></div>`;
   meta.innerHTML+=`<div class="meta-item">Quiz Qs: <b>${(d.quiz||[]).length}</b></div>`;
+  const mb = document.getElementById('modelBadge');
+  mb.textContent = 'Powered by ' + modelUsed; mb.style.display='block';
+
   document.getElementById('summaryCard').innerHTML=(d.summary||[]).map(p=>`<div class="bullet"><div class="dot"></div><div>${p}</div></div>`).join('');
   document.getElementById('stepsContainer').innerHTML=(d.steps||[]).map((s,i)=>`
     <div class="card"><div style="display:flex;gap:12px;align-items:flex-start;">
@@ -238,6 +251,28 @@ function renderOutput(d) {
   document.getElementById('outputWrap').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
+// Try one model, return parsed JSON or throw
+async function tryModel(model, key, prompt) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.2, maxOutputTokens: 8192 }
+    })
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const msg = data?.error?.message || `HTTP ${res.status}`;
+    throw new Error(msg);
+  }
+  const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  if (!raw) throw new Error('Empty response');
+  const clean = raw.replace(/```json|```/g,'').trim();
+  return JSON.parse(clean);
+}
+
 async function generate() {
   hideError();
   const sop = document.getElementById('sopInput').value.trim();
@@ -253,61 +288,51 @@ async function generate() {
   btn.disabled = true;
   setStatus('Processing...','tag-amber');
   document.getElementById('outputWrap').classList.remove('show');
-  const iv = startProgress();
+  const progressBar = startProgress();
 
-  const prompt = `You are an AI training content generator. Analyze the SOP below and respond ONLY with a valid JSON object. No markdown, no code fences, no explanation — just raw JSON.
+  const prompt = `You are an AI training content generator. Analyze the SOP and respond ONLY with a valid JSON object. No markdown, no code fences, no explanation — just raw JSON.
 
-JSON structure:
 {
   "title": "SOP title (3-6 words)",
   "department": "Department if mentioned, else General",
   "version": "Version if mentioned, else 1.0",
-  "summary": ["bullet 1 (1-2 sentences)", "bullet 2", "bullet 3", "bullet 4"],
-  "steps": [{"title": "Step name", "timing": "When (e.g. Day 1, Within 24hrs, Ongoing)", "description": "2-3 sentence explanation"}],
-  "quiz": [{"question": "Question?", "options": ["A","B","C","D"], "correct": 0}]
+  "summary": ["point 1", "point 2", "point 3", "point 4"],
+  "steps": [{"title": "name", "timing": "when", "description": "2 sentences"}],
+  "quiz": [{"question": "Q?", "options": ["A","B","C","D"], "correct": 0}]
 }
 
-Rules: summary = exactly 4 bullets. steps = 4-6. quiz = exactly 5 MCQs, 4 options each. correct = 0-based index. Ground everything in the SOP.
+Rules: summary = 4 bullets. steps = 4-6. quiz = 5 questions, correct = 0-based index.
 
-SOP:
-${sop}`;
+SOP: ${sop}`;
 
-  try {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(key)}`;
-
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.2, maxOutputTokens: 2048 }
-      })
-    });
-
-    const data = await res.json();
-    stopProgress(iv);
-
-    // Show the real API error — no masking
-    if (!res.ok) {
-      const apiMsg = data?.error?.message || `HTTP ${res.status} — ${JSON.stringify(data)}`;
-      throw new Error(`[${res.status}] ${apiMsg}`);
+  let lastError = '';
+  for (let i = 0; i < MODELS.length; i++) {
+    const model = MODELS[i];
+    const pct = 15 + (i * 15);
+    progressBar.style.width = pct + '%';
+    setProgressMsg(`Trying ${model}...`);
+    try {
+      const parsed = await tryModel(model, key, prompt);
+      stopProgress();
+      renderOutput(parsed, model);
+      setStatus('Complete','tag-teal');
+      btn.disabled = false;
+      return; // success — stop here
+    } catch(err) {
+      lastError = err.message;
+      // If it's an auth error, no point trying other models
+      if (err.message.includes('API_KEY_INVALID') || err.message.includes('API key not valid')) {
+        break;
+      }
+      // Otherwise try next model
+      continue;
     }
-
-    const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    if (!raw) throw new Error('Empty response from Gemini. Full response: ' + JSON.stringify(data));
-
-    const clean = raw.replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(clean);
-    renderOutput(parsed);
-    setStatus('Complete','tag-teal');
-
-  } catch(err) {
-    stopProgress(iv);
-    const msg = err.message || 'Unknown error';
-    showError('Error: ' + msg);
-    setStatus('Error','tag-gray');
   }
 
+  // All models failed
+  stopProgress();
+  showError(`All models failed. Last error: ${lastError}<br><br>Please check: (1) Your API key is correct, (2) You created the key in a <b>new project</b> at <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a>`);
+  setStatus('Error','tag-gray');
   btn.disabled = false;
 }
 </script>
